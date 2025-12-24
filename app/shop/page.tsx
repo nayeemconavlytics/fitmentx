@@ -1,32 +1,40 @@
-import ProductCard from "@/components/ProductCard";
+import { Suspense } from "react";
+import { getAllProducts } from "@/lib/products";
+import ShopClient from "@/components/ShopClient";
+import FitmentFilter from "@/components/FitmentFilter";
 
-const products = [
-  {
-    id: 1,
-    name: "BMW E36 Widebody Kit",
-    vehicle: "BMW E36",
-    price: 1899,
-    image: "https://via.placeholder.com/400",
-  },
-  {
-    id: 2,
-    name: "Mustang Fender Flares",
-    vehicle: "Ford Mustang",
-    price: 899,
-    image: "https://via.placeholder.com/400",
-  },
-];
+export default async function ShopPage() {
+  const products = getAllProducts();
 
-export default function Shop() {
   return (
-    <main className="max-w-7xl mx-auto px-6 py-12">
-      <h1 className="text-3xl font-bold mb-8">Shop Parts</h1>
+    <main className="max-w-7xl mx-auto px-6 py-24">
+      {/* PAGE TITLE */}
+      <h1 className="text-3xl font-extrabold mb-10">
+        Discover <span className="text-accent">Accessories</span>
+      </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
+      {/* FILTER + PRODUCTS */}
+      <Suspense
+        fallback={
+          <div className="space-y-6">
+            <div className="h-24 bg-gunmetal animate-pulse rounded-xl" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="h-64 bg-gunmetal animate-pulse rounded-xl"
+                />
+              ))}
+            </div>
+          </div>
+        }
+      >
+        <div className="mb-16">
+          <FitmentFilter />
+        </div>
+
+        <ShopClient products={products} />
+      </Suspense>
     </main>
   );
 }
